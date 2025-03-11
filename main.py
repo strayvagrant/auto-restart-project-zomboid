@@ -52,7 +52,7 @@ async def restart_server(server_id):
                 print("Server Start HTTP Status Code:", response.status)
                 
                 if response.status == 204:
-                    success_message = f"Server IndoPZ has been Restarted successfully!\nTunggu Beberapa Menit sampai server benar benar berjalan normal"
+                    success_message = f"Server has been restarted successfully! \nPlease wait a few minutes until the server is fully operational."
                     print(success_message)
                     return success_message
                 elif 'application/json' in response.headers.get('content-type', ''):
@@ -160,98 +160,72 @@ async def modcheck():
                 print("Detected mod update! ")
                 ch = bot.get_channel(nChannel)  # Yell in this Discord channel
 				
-                #send messgae to ingame========================================================================================================
-                command = f"./rcon -a {ip_address} -p {password} \"servermsg \\\"Server Akan Restart otomatis 3 Menit lagi, untuk mod update.\\\"\""
+                # Send message to in-game
+                command = f"./rcon -a {ip_address} -p {password} \"servermsg \\\"The server will be restarted in 10 minutes to update workshop mods.\\\"\""
                 subprocess.run(command, shell=True, check=True)
                 command = f"./rcon -a {ip_address} -p {password} \"save\""
                 subprocess.run(command, shell=True, check=True)
-                
-                embed = Embed(title=f"Mod [ {value['title']} ] Butuh Update!.",
-                              description=f"**Server Akan restart otomatis dalam 3 Menit.**",
-                              color=0x00FF00)
-                await ch.send(f"<@&{nSurvivor}>")
-                await ch.send(embed=embed)
-                await asyncio.sleep(60) # wait 3 minute
-                #=========================================OLD=================================================================================
-                #await ch.send(f"""Mod Steam Workshop ` [ {value["title"]} ] ` Butuh Update! <@&{nSurvivor}> . """)
-                #await ch.send(f"""Server will be restarted in 3 Minutes for mod update""")
-                #await asyncio.sleep(60) # wait 3 minute \n<@&{nSurvivor}>
-                
-				#send message to discord=======================================================================================================
-                
-                
-                
-                
-                
-                #send messgae to ingame========================================================================================================
-                command = f"./rcon -a {ip_address} -p {password} \"servermsg \\\"Server Akan Restart otomatis 2 Menit lagi, untuk mod update.\\\"\""
+
+                await ch.send(f"**{value['title']}** mod has been updated! \nThe server will automatically restart in 10 minutes.")
+                await asyncio.sleep(300)  # Wait 5 minutes
+
+                # Send message to in-game
+                command = f"./rcon -a {ip_address} -p {password} \"servermsg \\\"The server will be restarted in 5 minutes to update workshop mods.\\\"\""
                 subprocess.run(command, shell=True, check=True)
                 command = f"./rcon -a {ip_address} -p {password} \"save\""
                 subprocess.run(command, shell=True, check=True)
+
+                await ch.send(f"The server will automatically restart in 5 minutes.")
+                await asyncio.sleep(120)
+
+                # Send message to in-game
+                command = f"./rcon -a {ip_address} -p {password} \"servermsg \\\"The server will be restarted in 3 minutes to update workshop mods.\\\"\""
+                subprocess.run(command, shell=True, check=True)
+                command = f"./rcon -a {ip_address} -p {password} \"save\""
+                subprocess.run(command, shell=True, check=True)
+
+                await ch.send(f"The server will automatically restart in 3 minutes.")
                 await asyncio.sleep(60)
 
-                #embed = Embed(title="Server Akan restart otomatis dalam 2 Menit.",
-                #            description="",
-                #            color=0xFF5733)
-                #
-                #await ch.send(embed=embed)
-                #await asyncio.sleep(60)
-				#send message to discord=======================================================================================================
-                
-                
-                
-                
-                
-                
-                #send messgae to ingame========================================================================================================
-                command = f"./rcon -a {ip_address} -p {password} \"servermsg \\\"Please Logout, Server will be restarted in 1 Minutes.\\\"\""
+                # Send message to in-game
+                command = f"./rcon -a {ip_address} -p {password} \"servermsg \\\"The server will be restarted in 2 minutes to update workshop mods.\\\"\""
                 subprocess.run(command, shell=True, check=True)
                 command = f"./rcon -a {ip_address} -p {password} \"save\""
                 subprocess.run(command, shell=True, check=True)
+
+                await ch.send(f"The server will automatically restart in 2 minutes.")
                 await asyncio.sleep(60)
-                embed = Embed(title="Server Memulai Restart",
-                            description="",
-                                        color=0xFF5733)
-                embed.set_image(url=gift_restart)
-                await ch.send(embed=embed)
-                #await asyncio.sleep(60)
-                #send messgae to ingame========================================================================================================
+
+                # Send message to in-game
+                command = f"./rcon -a {ip_address} -p {password} \"servermsg \\\"The server will be restarted in 1 minute to update workshop mods.\\\"\""
+                subprocess.run(command, shell=True, check=True)
+                command = f"./rcon -a {ip_address} -p {password} \"save\""
+                subprocess.run(command, shell=True, check=True)
+
+                await ch.send(f"The server will automatically restart in 1 minute.")
+                await asyncio.sleep(60)
                 
+                await ch.send(f"The server is now restarting. Please wait a few minutes.")
+                await ch.send(gift_restart)
+
                 try:
-                    #for restart server
+                    # Restart server
                     command = f"./rcon -a {ip_address} -p {password} \"save\""
                     subprocess.run(command, shell=True, check=True)
                     result = await restart_server(server_id)
                     print(result)
-                    #for checking server online
+                    # Check server online status
                     while True:
                         server_status = await get_server_status(server_id)
-                        
-                  
+
                         if server_status == "Server is currently running":
-                            
-                            embed = Embed(title="Server sudah Online",
-                                          description=" ",
-                                          color=0x00FF00)
-                            embed.set_image(url=gift_running)
-                            await ch.send(f"<@&{nSurvivor}>")
-                            await ch.send(embed=embed)
-                            
+                            await ch.send(f"<@&{nSurvivor}> The server is now online!")
+                            await ch.send(gift_running)
                             print("Server is now running")
                             break
                         elif server_status == "Server is currently starting":
                             print("Server is still starting. Checking again in 1 minute...")
                             await asyncio.sleep(60)
-                            
-                        elif 'current_state' in server_status and server_status['current_state'] == 'running':
-                            print("Server is now running")
-                            embed = Embed(title="Server sudah Online",
-                                          description=" ",
-                                          color=0x00FF00)
-                            embed.set_image(url=gift_running)
-                            await ch.send(f"<@&{nSurvivor}>")
-                            await ch.send(embed=embed)
-                            break
                         else:
                             print("Unexpected server status. Exiting loop.")
                             await asyncio.sleep(60)
@@ -260,7 +234,7 @@ async def modcheck():
                         json.dump(checkresults, f)
                         print("Mod Update Success, Thank You ~")
                 except subprocess.CalledProcessError as e:
-                    print(f"Terjadi kesalahan: hubungi Teknisi Server")
+                    print(f"An error has occurred: contact the server technician.")
             		
         except KeyError:
             continue
